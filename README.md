@@ -154,14 +154,14 @@ Bit-wise operators do a bit-by-bit comparison between two operands.
 
 The operators included in Bit-wise operation are:
 - `&` : (Bit-wise AND)
-- `|` : (Bit-wiseOR)
+- `|` : (Bit-wise OR)
 - `~` : (Bit-wise NOT)
 - `^` : (Bit-wise XOR)
 - `~^` or `^~` : (Bit-wise XNOR)
 
 ### Logical Operators
 
-Logical operators are bit-wise operators and are used only for single-bit operands. They return a single bit value, 0 or 1. They can work on integers or groups of bits, expressions and treat all non-zero values as 1.
+Logical operators are used only for single-bit operands. They return a single bit value, 0 or 1. They can work on integers or groups of bits, expressions and treat all non-zero values as 1.
 
 Logical operators are generally used in conditional statements since they work with expressions. 
 
@@ -206,9 +206,9 @@ reg    [7:0] b;  // 8-bit reg
 logic [11:0] c;  // 12-bit logic
 ```
 
-- `wire` **a** handles 0-63 inclusive ($2^6$ is 64).
-- `register` **b** handles 0-255 inclusive ($2^8$ is 256).
-- `logic` **c** handles 0-4095 inclusive ($2^{12}$ is 4096).
+- `wire` **a** handles 0-63 inclusive : 6 bits from $2^0$ to $2^5$ ($2^6$ is 64).
+- `register` **b** handles 0-255 inclusive : 8 bits from $2^0$ to $2^7$ ($2^8$ is 256).
+- `logic` **c** handles 0-4095 inclusive : 12 bits from $2^0$ to $2^{11}$ ($2^{12}$ is 4096).
 
 You need to ensure your vector is large enough to handle the full range of values your design requires. 
 
@@ -218,7 +218,7 @@ Synthesis tools are good at discarding unused bits, so it’s better to err on t
 
 A module is a block of Verilog code that implements certain functionality. 
 
-Modules can be embedded within other modules, and a higher level module can communicate with its lower-level modules using their `input` and `output` [ports](#verilog-ports).
+Modules can be embedded/instantiated within other modules, and a higher level module can communicate with its lower-level modules using their `input` and `output` [ports](#verilog-ports).
 
 A module should be enclosed within a `module` and `endmodule` keywords. 
 
@@ -241,7 +241,9 @@ endmodule
 
 ## Top-level Modules
 
-A top-level module is one that contains all other modules. A top-level module is not INSTANTIATED within any other module.
+A top-level module is one that contains  all other modules. Although module definitions can't contain other module definitions, but modules can be instantiated within other module definitions.
+
+A top-level module is not INSTANTIATED within any other module.
 
 For example, `design` modules are usually instantiated within top-level `testbench` modules so that simulation can be run by providing input stimulus.
 
@@ -304,7 +306,7 @@ Delay values are treated relative to the time of execution of the previous state
 
 ## Parallel Block Statements
  
-A Parallel Block-Statemet can execute statements concurrently and delay control can be used to provide time-ordering of the assignments. 
+A Parallel Block-Statement can execute statements concurrently and delay control can be used to provide time-ordering of the assignments. 
 
 Statements are launched in parallel by wrapping them within the `fork` and `join` keywords.
 
@@ -378,7 +380,7 @@ Other files can be included in the current file using an **`include** pre-proces
 
 This is equivalent to simply pasting the entire contents of the other file in this main file.
 
-TODO:
+TODO
 
 # Verilog Timing Control
 
