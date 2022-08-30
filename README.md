@@ -2,6 +2,8 @@
 
 - [Table of Contents](#table-of-contents)
 - [What is Verilog?](#what-is-verilog)
+- [FPGA (Field Programmable Gate Array)](#fpga-field-programmable-gate-array)
+- [Synthesizable vs. Non-Synthesizable code](#synthesizable-vs-non-synthesizable-code)
 - [Best Practices](#best-practices)
   - [Verilog Naming Convention](#verilog-naming-convention)
 - [Compiling and Simulating a file in Modelsim](#compiling-and-simulating-a-file-in-modelsim)
@@ -50,6 +52,22 @@ It is a language used for describing a digital system such as a network switch, 
 We can describe any digital hardware by using HDL at any level. 
 
 Designs described in HDL are independent of technology, very easy for designing and debugging, and are normally more useful than schematics, particularly for large circuits.
+
+# FPGA (Field Programmable Gate Array)
+
+TODO
+
+# Synthesizable vs. Non-Synthesizable code
+
+When you write you Verilog or VHDL code, you are writing code that will be translated into gates, registers, RAMs, etc. 
+
+The program that performs this task is known as a **Synthesis Tool**. It is the job of the **Synthesis Tool** to take your Verilog or VHDL code and turn it into something that the FPGA can understand. 
+
+However, there are some parts of Verilog and VHDL that the FPGA simply cannot implement. When you write code like this, it is called non-synthesizable code.
+
+So why would you have a language that contains code that is non-synthesizable? 
+
+The reason is that it makes your testbenches more powerful. When you write a testbench for simulation, often using non-synthesizable code constructs makes your testbench better and allows you to accomplish things easier.
 
 # Best Practices
 
@@ -177,7 +195,7 @@ Operands are expressions or values on which an operator operates or works. All e
 
 ### `reg`
 
-TODO
+Identifiers declared as `reg` are manipulated within procedural blocks ([`always` and `initial`](#initial-and-always-statements)) only.
 
 ### `wire`
 
@@ -217,6 +235,8 @@ Synthesis tools are good at discarding unused bits, so it’s better to err on t
 # Verilog Module
 
 A module is a block of Verilog code that implements certain functionality. 
+
+Modules can be implemented in terms of design algorithm without concern for the hardware implementation. This is part of the BEHAVIORAL level of abstraction in Verilog.
 
 Modules can be embedded/instantiated within other modules, and a higher level module can communicate with its lower-level modules using their `input` and `output` [ports](#verilog-ports).
 
