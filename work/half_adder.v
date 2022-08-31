@@ -1,6 +1,8 @@
 module half_adder(x,y,sum,carry);
   input x,y;
   output sum, carry;
+
+  //* Data-flow modelling
   assign carry = x&y;
   assign sum = x^y; // `^` is xor operation
 endmodule
@@ -16,6 +18,7 @@ module testbenchforhalfadder;
   This can be viewed by adding `sum` and `carry` in the visualizer panel in any software.
   */
 
+  //* Behavioral Modelling
   initial begin
   // change default runtime from Simulate --> Runtime options 
   // #100 means perform the operation after 100 ps.
