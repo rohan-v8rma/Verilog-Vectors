@@ -31,16 +31,25 @@
   - [Sequential Block-Statements](#sequential-block-statements)
   - [Parallel Block Statements](#parallel-block-statements)
   - [Naming of Blocks](#naming-of-blocks)
-- [`assign` Statement](#assign-statement)
+- [Assignments in Verilog](#assignments-in-verilog)
+  - [Continuous Assigns (`assign` statements)](#continuous-assigns-assign-statements)
+  - [Procedural Assignments](#procedural-assignments)
+  - [Driving values in verilog](#driving-values-in-verilog)
 - [Verilog Compiler Directives](#verilog-compiler-directives)
   - [1. `timescale](#1-timescale)
     - [Checking the Default Timescale (`$printtimescale`)](#checking-the-default-timescale-printtimescale)
   - [2. `include](#2-include)
+- [Verilog System Tasks](#verilog-system-tasks)
 - [Verilog Timing Control](#verilog-timing-control)
   - [Delay control](#delay-control)
+  - [Rise and Fall](#rise-and-fall)
 - [`initial` and `always` Statements](#initial-and-always-statements)
   - [Syntax for using `initial` statement](#syntax-for-using-initial-statement)
     - [Multiple `initial` statements in a program](#multiple-initial-statements-in-a-program)
+- [Types of Modeling](#types-of-modeling)
+  - [Dataflow Modelling](#dataflow-modelling)
+  - [Gate-Level Modelling](#gate-level-modelling)
+  - [Behavorial Modelling](#behavorial-modelling)
 - [TODO](#todo)
 
 # What is Verilog?
@@ -197,6 +206,12 @@ Operands are expressions or values on which an operator operates or works. All e
 
 Identifiers declared as `reg` are manipulated within procedural blocks ([`always` and `initial`](#initial-and-always-statements)) only.
 
+Registers represent data storage elements. 
+
+Registers retain value until another value is placed onto them. 
+
+In Verilog, the term register merely means a variable that can hold a value.
+
 ### `wire`
 
 TODO
@@ -232,11 +247,11 @@ You need to ensure your vector is large enough to handle the full range of value
 
 Synthesis tools are good at discarding unused bits, so it’s better to err on the side of too large rather than too small.
 
+![](README-images/scalar-vector.png)
+
 # Verilog Module
 
 A module is a block of Verilog code that implements certain functionality. 
-
-Modules can be implemented in terms of design algorithm without concern for the hardware implementation. This is part of the BEHAVIORAL level of abstraction in Verilog.
 
 Modules can be embedded/instantiated within other modules, and a higher level module can communicate with its lower-level modules using their `input` and `output` [ports](#verilog-ports).
 
@@ -355,9 +370,39 @@ join
 
 By doing this, the block can be referenced in a `disable` statement.
 
-# `assign` Statement
+# Assignments in Verilog
 
-TODO
+## Continuous Assigns (`assign` statements)
+
+A module may have any number of continuous `assign` statements. 
+
+Continuous `assign` statements are used to [drive](#driving-values-in-verilog) values on to `wire`s, and are evaluated and updated whenever an input operand changes value. For example:
+
+```verilog
+assign a = b & c;
+```
+
+This is referred to as a continuous assign because the `wire` on the left-hand side of the assignment operator is continuously driven with the value of the expression on the right-hand side. 
+
+The target of the assign statement must be a [`wire`](#wire). 
+
+The continuous assign statement is not a procedural statement and so must be used at the module level; it cannot be placed in an [`initial` or `always`](#initial-and-always-statements) process.
+
+You can add delay to a continuous assign statement as follows:
+
+```verilog
+assign #10 a = b & c;
+```
+
+In this case, the value of `a` changes 10 units of time after the expression `b & c` changes. 
+
+## Procedural Assignments
+
+Procedural assignments update the value of register variables under the control of the procedural flow constructs that surround them.
+
+## Driving values in verilog
+
+A driver is a concurrent process that determines the value of a signal.
 
 # Verilog Compiler Directives
 
@@ -402,6 +447,22 @@ This is equivalent to simply pasting the entire contents of the other file in th
 
 TODO
 
+# Verilog System Tasks
+
+- `$display`: displays values of variables, string, or expressions
+  ```verilog
+  $display(ep1, ep2, …, epn);
+  ```
+  ep1, ep2, …, epn: quoted strings, variables, expressions.
+- `$monitor`: monitors a signal when its value changes.
+  ```verilog
+  $monitor(ep1, ep2, …, epn);
+  ```
+- `$monitoton`: enables monitoring operation.
+- `$monitotoff`: disables monitoring operation.
+- `$stop`: suspends the simulation.
+- `$finish`: terminates the simulation.
+
 # Verilog Timing Control
 
 Timing control statements are required in simulation to advance time. 
@@ -422,8 +483,21 @@ The symbol `#` is used to specify the delay.
 ```
 The `#10` command advances time by 10 units. So, Hello World is displayed after 10 units of time.
 
+## Rise and Fall
+
+TODO
 
 # `initial` and `always` Statements
+
+Two basic structured procedure statements or procedural blocks are `always` ([synthesizable](#synthesizable-vs-non-synthesizable-code)) and `initial` ([non-synthesizable](#synthesizable-vs-non-synthesizable-code)).
+
+General common information about these blocks:
+
+- All behavioral statements can appear only inside these blocks
+- Each `always` or `initial` block has a separate activity flow (concurrency)
+- There can be multiple `always` and `initial` blocks in a module
+- All procedural blocks start from simulation time 0
+- Cannot be nested
 
 `initial` and `always` statements describe independent processes (blocks of code), meaning that the statements in one process execute autonomously. 
 
@@ -456,6 +530,76 @@ There are no limits to the number of initial blocks that can be defined inside a
 The code shown below has three initial blocks, all of which are STARTED AT THE SAME TIME and run in parallel.
 
 However, depending on the statements and the delays within each initial block, the time taken to finish the block may vary.
+
+# Types of Modeling
+
+## Dataflow Modelling
+
+Dataflow modeling makes use of the **FUNCTIONS** that define the working of the circuit instead of its gate structure ([gate-level modelling](#gate-level-modelling)).
+
+Dataflow modeling uses several [**OPERATORS**](#operators) that act on [operands](#operands) to produce the desired results. Verilog provides about 30 operator types.
+
+Dataflow modeling describes hardware in terms of the flow of data from input to output.
+
+The dataflow modeling style is mainly used to describe combinational circuits. 
+
+The primary mechanism used is a [continuous assignment](#continuous-assigns-assign-statements).
+
+For example:
+
+```verilog
+module half_adder(x,y,sum,carry);
+  input x,y;
+  output sum, carry;
+  assign carry = x&y;
+  assign sum = x^y;
+endmodule
+```
+
+## Gate-Level Modelling
+
+Modules implemented in terms of built-in logic gate functions like (`and`, `or`, `xor`, etc) and interconnnect these.
+
+For example:
+
+```verilog
+module gatemodelone(a, b, c, out);
+  input a, b, c;
+  output out;  
+  
+  wire wire_1, wire_2, wire_3;
+
+  and(wire_1, a, b);
+  
+  and(wire_2, ~b, c);
+  
+  or(out, wire_2, wire_1);
+
+endmodule
+```
+
+## Behavorial Modelling
+
+Behavioral models in Verilog contain procedural statements, which control the simulation and manipulate variables of the data types. 
+
+All these statements are contained within the procedures. Each of the procedure has an activity flow associated with it.
+
+During simulation of BEHAVIORAL model, all the flows defined by the [`always` and `initial`](#initial-and-always-statements) statements start together at simulation time ‘zero’. 
+
+The `initial` statements are executed once, and the `always` statements are executed repetitively.
+
+For example: 
+
+```verilog
+reg x, y; 
+
+initial begin
+  #20    x = 1'b0 ; y = 1'b0;
+  #20    x = 1'b0 ; y = 1'b1;
+  #20    x = 1'b1 ; y = 1'b0;
+  #20    x = 1'b1 ; y = 1'b1;
+end
+```
 
 # TODO
 
