@@ -31,6 +31,7 @@ module testbenchforfullsubtractor;
         #20    minuend = 1'b1; subtrahend = 1'b0; inborrow = 1'b1;
         #20    minuend = 1'b1; subtrahend = 1'b1; inborrow = 1'b0;
         #20    minuend = 1'b1; subtrahend = 1'b1; inborrow = 1'b1;
+        #20    $finish;
     end
 
 endmodule

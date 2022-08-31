@@ -32,5 +32,6 @@ module testbenchforhalfsubtractor;
         #20  minuend = 1'b0; subtrahend = 1'b1;
         #20  minuend = 1'b1; subtrahend = 1'b0;
         #20  minuend = 1'b1; subtrahend = 1'b1;
+        #20  $finish;
     end
 endmodule

@@ -22,7 +22,7 @@ module testbenchforfulladder;
         #20   a = 1'b1; b = 1'b0; incarry = 1'b1;
         #20   a = 1'b1; b = 1'b1; incarry = 1'b0;
         #20   a = 1'b1; b = 1'b1; incarry = 1'b1;
-        
+        #20   $finish;        
     end
     
 

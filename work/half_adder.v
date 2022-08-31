@@ -28,5 +28,6 @@ module testbenchforhalfadder;
     #20    x = 1'b0 ; y = 1'b1;
     #20    x = 1'b1 ; y = 1'b0;
     #20    x = 1'b1 ; y = 1'b1;
+    #20    $finish;
   end
 endmodule
