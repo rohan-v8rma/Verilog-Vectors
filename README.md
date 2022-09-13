@@ -43,9 +43,13 @@
 - [Verilog Timing Control](#verilog-timing-control)
   - [Delay control](#delay-control)
   - [Rise and Fall](#rise-and-fall)
-- [`initial` and `always` Statements](#initial-and-always-statements)
-  - [Syntax for using `initial` statement](#syntax-for-using-initial-statement)
-    - [Multiple `initial` statements in a program](#multiple-initial-statements-in-a-program)
+- [Procedural Blocks](#procedural-blocks)
+  - [`initial` Statement](#initial-statement)
+    - [Syntax for using `initial` statement](#syntax-for-using-initial-statement)
+      - [Multiple `initial` statements in a program](#multiple-initial-statements-in-a-program)
+  - [`always` Statement](#always-statement)
+    - [Syntax for using `always` statement](#syntax-for-using-always-statement)
+    - [Sensitivity List](#sensitivity-list)
 - [Types of Modeling](#types-of-modeling)
   - [Dataflow Modelling](#dataflow-modelling)
   - [Gate-Level Modelling](#gate-level-modelling)
@@ -225,6 +229,7 @@ wire  x;  // 1 bit wire
 reg   y;  // also 1 bit
 logic z;  // me too!
 ```
+
 A scalar can only hold 0 or 1.
 
 We need a vector to hold values other than 0 and 1.
@@ -400,6 +405,18 @@ In this case, the value of `a` changes 10 units of time after the expression `b 
 
 Procedural assignments update the value of register variables under the control of the procedural flow constructs that surround them.
 
+```verilog
+module test;
+  reg a, b, c, d;
+  
+  initial begin 
+    a = 1'b0;
+    b = 1'b1;
+    
+    {c, d} = b+a; // Here we are assigning the 2 bit sum of addition of a and b to c and d, where 'd' is assigned the LSB and 'c' is assigned the MSB.
+  end
+endmodule
+```
 ## Driving values in verilog
 
 A driver is a concurrent process that determines the value of a signal.
@@ -460,8 +477,8 @@ TODO
   ```
 - `$monitoton`: enables monitoring operation.
 - `$monitotoff`: disables monitoring operation.
-- `$stop`: suspends the simulation.
-- `$finish`: terminates the simulation.
+- `$stop`: suspends the simulation and puts a simulator in an interactive mode.
+- `$finish`: exits the simulation and gives control back to the operating system.
 
 # Verilog Timing Control
 
@@ -487,7 +504,7 @@ The `#10` command advances time by 10 units. So, Hello World is displayed after 
 
 TODO
 
-# `initial` and `always` Statements
+# Procedural Blocks
 
 Two basic structured procedure statements or procedural blocks are `always` ([synthesizable](#synthesizable-vs-non-synthesizable-code)) and `initial` ([non-synthesizable](#synthesizable-vs-non-synthesizable-code)).
 
@@ -498,18 +515,13 @@ General common information about these blocks:
 - There can be multiple `always` and `initial` blocks in a module
 - All procedural blocks start from simulation time 0
 - Cannot be nested
+- `initial` and `always` statements describe independent processes (blocks of code), meaning that the statements in one process execute autonomously. 
 
-`initial` and `always` statements describe independent processes (blocks of code), meaning that the statements in one process execute autonomously. 
+## `initial` Statement
 
-Both types of processes consist of procedural statements and both start immediately as the simulator is started. 
+`initial` processes execute once
 
-The difference between the two is that `initial` processes execute once, whereas `always` process execute repeatedly forever. 
-
-As such, an `always` process must contain timing statements that will occasionally block execution and allow time to advance (time in `initial` and `always` process only advances when they are blocked). 
-
-Thus, activity in these process progresses in a burst during which time does not advance, and then the activity blocks, which allows time to move forward.
-
-## Syntax for using `initial` statement
+### Syntax for using `initial` statement
 
 ```verilog
 initial  
@@ -521,7 +533,7 @@ initial begin
 end  
 ```
 
-### Multiple `initial` statements in a program
+#### Multiple `initial` statements in a program
 
 There are no limits to the number of initial blocks that can be defined inside a module. 
 
@@ -530,6 +542,51 @@ There are no limits to the number of initial blocks that can be defined inside a
 The code shown below has three initial blocks, all of which are STARTED AT THE SAME TIME and run in parallel.
 
 However, depending on the statements and the delays within each initial block, the time taken to finish the block may vary.
+
+## `always` Statement
+
+`always` processes execute repeatedly forever. 
+
+As such, an `always` process must contain timing statements that will occasionally block execution and allow time to advance (time in `initial` and `always` process only advances when they are blocked). 
+
+Thus, activity in these process progresses in a burst during which time does not advance, and then the activity blocks, which allows time to move forward.
+
+### Syntax for using `always` statement
+
+```verilog
+always @ (event)  
+    [statement]  
+  
+always @ (event) begin  
+    [multiple statements]  
+end  
+```
+
+The symbol `@` after the reserved word `always`, indicates that the block will be triggered at the condition in parenthesis after symbol `@`.
+
+In any combinational logic, output changes whenever input changes. 
+
+When this theory is applied to `always` blocks, then the code inside always blocks needs to be executed whenever the input or output variables change.
+
+### Sensitivity List
+
+A sensitivity list is an expression that defines when the `always` block should be executed, and it is specified after the `@` operator within the parentheses ( ). 
+
+This list may contain either one or a group of signals whose **value change** will execute the `always` block.
+
+In the code shown below, all statements inside the `always` block executed whenever the value of signals `x` or `y` change.
+
+```verilog
+always @ (x or y) begin  
+    [statements]  
+end  
+```
+
+The `always` block repeats continuously throughout a simulation. 
+
+The sensitivity list brings a certain sense of timing, i.e., whenever any signal in the sensitivity list changes, the `always` block is triggered.
+
+If there are no timing control statements within an `always` block, the simulation will hang because of a zero-delay infinite loop.
 
 # Types of Modeling
 
