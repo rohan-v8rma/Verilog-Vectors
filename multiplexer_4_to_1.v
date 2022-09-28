@@ -8,6 +8,8 @@ module multiplexer_4_to_1(input_lines, select_lines, out);
     // We use the case statement over here, because there is only one output to change. In the case of de-multiplexer, we need to take care of 4-8 output lines
     
     always @(input_lines or select_lines) begin
+      
+      // We used case statement over here, since we have taken care of all possible cases of select_lines.
       case (select_lines) 
         2'b00 : out = input_lines[0];
         2'b01 : out = input_lines[1]; 
