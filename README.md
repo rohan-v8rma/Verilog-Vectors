@@ -14,12 +14,39 @@
     - [Integer Number](#integer-number)
   - [Identifiers](#identifiers)
   - [Operators](#operators)
-    - [Bit-wise Operators](#bit-wise-operators)
+    - [Arithmetic Operators](#arithmetic-operators)
+    - [Bitwise Operators](#bitwise-operators)
+    - [Reduction Operators](#reduction-operators)
+    - [Relational Operators](#relational-operators)
     - [Logical Operators](#logical-operators)
+    - [Shift Operators](#shift-operators)
+    - [Assignment Operators](#assignment-operators)
+    - [Other Operators](#other-operators)
   - [Operands](#operands)
-    - [`reg`](#reg)
-    - [`wire`](#wire)
+    - [`reg` (register)](#reg-register)
+    - [`wire` (net/network)](#wire-netnetwork)
 - [Vectors & Scalars](#vectors--scalars)
+  - [Overflow of Values](#overflow-of-values)
+  - [High Impedance (`z`) and Undefined (`x`) Values](#high-impedance-z-and-undefined-x-values)
+- [Verilog Concatenation](#verilog-concatenation)
+- [Verilog Replication](#verilog-replication)
+- [Block Statements](#block-statements)
+  - [Sequential Block-Statements](#sequential-block-statements)
+  - [Parallel Block Statements](#parallel-block-statements)
+  - [Naming of Blocks](#naming-of-blocks)
+- [Procedural Blocks](#procedural-blocks)
+  - [`initial` Statement](#initial-statement)
+    - [Syntax for using `initial` statement](#syntax-for-using-initial-statement)
+      - [Multiple `initial` statements in a program](#multiple-initial-statements-in-a-program)
+  - [`always` Statement](#always-statement)
+    - [Syntax for using `always` statement](#syntax-for-using-always-statement)
+    - [Sensitivity List](#sensitivity-list)
+- [Assignments in Verilog](#assignments-in-verilog)
+  - [Procedural Assignments](#procedural-assignments)
+    - [Blocking Assignment (`=`)](#blocking-assignment-)
+    - [Non-Blocking Assignment (`<=`)](#non-blocking-assignment-)
+  - [Continuous Assignment](#continuous-assignment)
+  - [Driving values in verilog](#driving-values-in-verilog)
 - [Verilog Module](#verilog-module)
   - [Top-level Modules](#top-level-modules)
   - [`design` Top-Level](#design-top-level)
@@ -27,14 +54,6 @@
 - [Verilog Ports](#verilog-ports)
   - [Port Declaration](#port-declaration)
   - [`wire` and `reg`](#wire-and-reg)
-- [Block Statements](#block-statements)
-  - [Sequential Block-Statements](#sequential-block-statements)
-  - [Parallel Block Statements](#parallel-block-statements)
-  - [Naming of Blocks](#naming-of-blocks)
-- [Assignments in Verilog](#assignments-in-verilog)
-  - [Continuous Assigns (`assign` statements)](#continuous-assigns-assign-statements)
-  - [Procedural Assignments](#procedural-assignments)
-  - [Driving values in verilog](#driving-values-in-verilog)
 - [Verilog Compiler Directives](#verilog-compiler-directives)
   - [1. `timescale](#1-timescale)
     - [Checking the Default Timescale (`$printtimescale`)](#checking-the-default-timescale-printtimescale)
@@ -43,13 +62,6 @@
 - [Verilog Timing Control](#verilog-timing-control)
   - [Delay control](#delay-control)
   - [Rise and Fall](#rise-and-fall)
-- [Procedural Blocks](#procedural-blocks)
-  - [`initial` Statement](#initial-statement)
-    - [Syntax for using `initial` statement](#syntax-for-using-initial-statement)
-      - [Multiple `initial` statements in a program](#multiple-initial-statements-in-a-program)
-  - [`always` Statement](#always-statement)
-    - [Syntax for using `always` statement](#syntax-for-using-always-statement)
-    - [Sensitivity List](#sensitivity-list)
 - [Types of Modeling](#types-of-modeling)
   - [Dataflow Modelling](#dataflow-modelling)
   - [Gate-Level Modelling](#gate-level-modelling)
@@ -60,11 +72,15 @@
 
 Verilog is a Hardware Description Language (HDL). 
 
-It is a language used for describing a digital system such as a network switch, a microprocessor, a memory, or a flip-flop. 
+- It is a language used for describing a digital system such as a network switch, a microprocessor, a memory, or a flip-flop. 
 
-We can describe any digital hardware by using HDL at any level. 
+  We can describe any digital hardware by using HDL at any level. 
 
-Designs described in HDL are independent of technology, very easy for designing and debugging, and are normally more useful than schematics, particularly for large circuits.
+- Designs described in HDL are independent of technology, very easy for designing and debugging, and are normally more useful than schematics, particularly for large circuits.
+
+- Another distinctive characteristic of an HDL is that it models massive amounts of parallel processes. At the lowest level of digital design, every primitive gate (AND, OR, DFF) is an independent concurrent process. 
+
+  Modules are containers representing processes modeled at different levels of abstraction. Groups of primitives and modules pass values to each other via networks of signals. 
 
 # FPGA (Field Programmable Gate Array)
 
@@ -179,34 +195,99 @@ The identifier is the name used to define the object, such as a function, module
 
 ## Operators
 
-### Bit-wise Operators
+### Arithmetic Operators
 
-Bit-wise operators do a bit-by-bit comparison between two operands. 
+    For the FPGA, division and multiplication are very expensive, and sometimes we cannot synthesize division. If we use Z or X for values, the result is unknown. The operations treat the values as unsigned.
 
-The operators included in Bit-wise operation are:
-- `&` : (Bit-wise AND)
-- `|` : (Bit-wise OR)
-- `~` : (Bit-wise NOT)
-- `^` : (Bit-wise XOR)
-- `~^` or `^~` : (Bit-wise XNOR)
+    | Character |	Operation performed |	Example |
+    |-|-|-|
+    | `+` |	Add |	b + c = 11 |
+    | `-` |	Subtract |	b - c = 9, -b=-10 |
+    | `/` |	Divide |	b / a = 2 |
+    | `*` |	Multiply |	a * b = 50 |
+    | `%` |	Modulus |	b % a = 0 |
+
+### Bitwise Operators
+    
+    Each bit is operated, the result is the size of the largest operand, and the smaller operand is left extended with zeroes to the bigger operand's size.
+    
+    | Character |	Operation performed |	Example |
+    |-|-|-|
+    | `~` |	Invert each bit |	~a = 3'b010 |
+    | `&` |	And each bit | b & c = 3'b010 |
+    | `\|` | Or each bit	| a \| b = 3'b111 |
+    | `^`	| Xor each bit	| a ^ b = 3'b011 |
+    | `^~` or `~^` |	Xnor each bit |	a ^~ b = 3'b100 |
+
+### Reduction Operators
+
+    These operators reduce the vectors to only one bit. If there are the characters z and x, the result can be a known value.
+
+    | Character |	Operation performed |	Example |
+    |-|-|-|
+    | `&` |	And all bits |	&a = 1'b0, &d = 1'b0 |
+    | `~&` |	Nand all bits	| ~&a = 1'b1 |
+    | `\|` |	Or all bits	| \|a = 1'b1, \|c = 1'bX |
+    | `~\|` |	Nor all bits |	~\|a= 1'b0 |
+    | `^` |	Xor all bits |	^a = 1'b1 |
+    | `^~` or `~^` |	Xnor all bits |	~^a = 1'b0 |
+
+### Relational Operators
+
+    These operators compare operands and results in a 1-bit scalar Boolean value. The case equality and inequality operators can be used for unknown (`x`) or high impedance values (`z`), and if the two operands are unknown, the result is a 1.
+
+    | Character |	Operation performed |	Example |
+    |-|-|-|
+    | `>` |	Greater than |	a > b = 1'b0 |
+    | `<` |	Smaller than | a < b = 1'b1 |
+    | `>=` |	Greater than or equal |	a >= d = 1'bX |
+    | `<=` | Smaller than or equal |	a <= e = 1'bX |
+    | `==` |	Equality	| a == b = 1'b0 |
+    | `!=` |	Inequality |	a != b = 1'b1 |
+    |`===` |	Case equality	| e === e = 1'b1 |
+    | `!===` |	Case inequality	| a !== d = 1'b1 |
 
 ### Logical Operators
 
-Logical operators are used only for single-bit operands. They return a single bit value, 0 or 1. They can work on integers or groups of bits, expressions and treat all non-zero values as 1.
+    These operators compare operands and results in a 1-bit scalar Boolean value.
 
-Logical operators are generally used in conditional statements since they work with expressions. 
+    | Character |	Operation performed |	Example |
+    |-|-|-|
+    | `!` |	Not true |	!(a && b) = 1'b1 |
+    | `&&` | Both expressions true	| a && b = 1'b0 |
+    | `\|\|` | One ore both expressions true |	a \|\| b = 1'b1 |
 
-The operators included in Logical operation are:
+### Shift Operators
+  
+    These operators shift operands to the right or left, the size is kept constant, shifted bits are lost, and the vector is filled with zeroes.
 
-- `!`  : (logical NOT)
-- `&&` : (logical AND)
-- `||` : (logical OR)
+    | Character |	Operation performed |	Example |
+    |-|-|-|
+    | `>>` |	Shift right	| b >> 1 results 4?b010X |
+    | `<<` |	Shift left	| a << 2 results 4?b1000 |
+
+### Assignment Operators
+There are three assignment operators, each of which performs different tasks, and are used with different data types:
+
+   - `assign` : ([continuous assignment](#continuous-assignment))
+   -   `<=`   : ([non-blocking assignment](#non-blocking-assignment))
+   -    `=`   : ([blocking assignment](#blocking-assignment))
+
+### Other Operators
+
+    These are operators used for condition testing and to create vectors.
+
+    | Character |	Operation performed |	Example |
+    |-----------|---------------------|---------|
+    |  `?:`	    |Conditions testing	  | test cond. `?` if true do this `:` if not do this|
+    | `{}`	    | [Concatenation](#verilog-concatenation)	        | c = {a,b} = 8'101010x0|
+    |`{{}}`     |	[Replication](#verilog-replication)       |	{3{`2'b10`}} = `6'b101010`|
 
 ## Operands
 
 Operands are expressions or values on which an operator operates or works. All expressions have at least one operand.
 
-### `reg`
+### `reg` (register)
 
 Identifiers declared as `reg` are manipulated within procedural blocks ([`always` and `initial`](#initial-and-always-statements)) only.
 
@@ -216,9 +297,11 @@ Registers retain value until another value is placed onto them.
 
 In Verilog, the term register merely means a variable that can hold a value.
 
-### `wire`
+### `wire` (net/network)
 
-TODO
+In Verilog, a `wire` declaration represents a network (net) of connections with each connection either driving a value or responding to the resolved value being driven on the net. 
+
+The output of each of these concurrent processes drives a net in what is called a [***continuous assignment***](#continuous-assignment) because the process continually updates the value it wants to drive on the net. 
 
 # Vectors & Scalars
 
@@ -254,72 +337,83 @@ Synthesis tools are good at discarding unused bits, so it’s better to err on t
 
 ![](README-images/scalar-vector.png)
 
-# Verilog Module
-
-A module is a block of Verilog code that implements certain functionality. 
-
-Modules can be embedded/instantiated within other modules, and a higher level module can communicate with its lower-level modules using their `input` and `output` [ports](#verilog-ports).
-
-A module should be enclosed within a `module` and `endmodule` keywords. 
-
-The name of the module should be given right after the `module` keyword, and an optional list of ports may be declared as well.
+## Overflow of Values
 
 ```verilog
-module <name> ([port_list]);  
-        // Contents of the module  
-
-endmodule  
-
-// A module can have an empty portlist  
+module main;
+  reg[1:0] b;
   
-module name;  
-        // Contents of the module  
-  
-endmodule  
+  initial begin
+    b = 5'b11110;
+    $display(b);
+    $finish;
+  end
 
+endmodule
 ```
 
-## Top-level Modules
+Although `b` is a 2-bit `reg`, if we try assigning a 5-bit value to it, no error will be thrown.
 
-A top-level module is one that contains  all other modules. Although module definitions can't contain other module definitions, but modules can be instantiated within other module definitions.
+Its just that the extra bits will be discarded, and the 2 LSBs will be assigned to `b`.
 
-A top-level module is not INSTANTIATED within any other module.
+Output:
+```
+10
+```
 
-For example, `design` modules are usually instantiated within top-level `testbench` modules so that simulation can be run by providing input stimulus.
+## High Impedance (`z`) and Undefined (`x`) Values 
 
-But, the `testbench` is not instantiated within any other module because it is a block that encapsulates everything else.
+TODO
 
-## `design` Top-Level
+# Verilog Concatenation
 
-The Design top-level module contains all other sub-modules required to make the design complete.
+Multi-bit Verilog `wires` and variables (`reg`) can be clubbed together to form a bigger multi-net `wire` or variable (`reg`) using concatenation operators `{` and `}` separated by commas. 
 
-## `testbench` Top-Level
+Concatenation is also allowed to have expressions and sized constants as operands in addition to `wires` and variables (`reg`).
 
-The `testbench` module contains a stimulus to check the functionality of the `design` and primarily used for functional verification by using simulation tools.
+Size of each operand must be known in order to calculate the complete size of concatenation.
 
-Hence the `design` is instantiated and called `<name>` inside the `testbench` module. 
+Verilog Concatenation Example
+```verilog
+wire a, b;// 1-bit wire
+wire[1:0] result1;// 2-bit wire to store a and b
 
-The `testbench` is the top-level module from a simulator perspective.
+// result1[1] follows a, and result1[0] follows b
+assign res = {a, b};
 
-# Verilog Ports
+wire[2:0] c;
+wire[7:0] result2;
 
-Port is an essential component of the Verilog module. 
+// result2[0]   follows c[2]
+// result2[2:1] is always 0
+// result2[4:3] follows c[1:0]
+// result2[5]   follows a
+// result2[6]   follows b
+assign result2 ={b, a, c[1:0], 2'b00, c[2]};
+```
+Here is a working design example of concatenation of inputs to form different outputs. 
 
-Ports are used by a module to communicate with the external world through `input` and `output`.
+Concatenated expressions can be simply displayed or assigned to any `wire` or variable (`reg`), not necessarily outputs.
 
-## Port Declaration
+# Verilog Replication 
 
-Every port in the port list must be declared as `input`, `output` or `inout`, based on the port signal's direction.
+When the same expression has to be repeated for a number of times, a ***replication constant*** is used which needs to be a non-negative number and cannot be `X`, `Z` or any variable.
 
-Every port in the port list must be declared as `input`, `output` or `inout`. 
+This constant number is also enclosed within braces along with the original concatenation operator and indicates the total number of times the expression will be repeated.
 
-## `wire` and `reg`
+```verilog
+wire a;
+wire[6:0] result;
 
-In Verilog, all port declarations are implicitly declared as `wire`. If a port is intended to be a `wire`, it is sufficient to declare it as `output`, `input`, or `inout`.
+assign result = {7{a}};
 
-`input` and `inout` ports are generally declared as wires. 
+{2'bz{2'b0}} // Illegal to have Z as replication constant
+{2'bx{2'b0}} // Illegal to have X as replication constant
+```
 
-However, if output ports hold their value, they must be declared as `reg`.
+Replication expressions CANNOT:
+1. Appear on the left hand side of any assignment 
+2. Be connected to `output` or `inout` ports.
 
 # Block Statements
 
@@ -374,135 +468,6 @@ join
 ```
 
 By doing this, the block can be referenced in a `disable` statement.
-
-# Assignments in Verilog
-
-## Continuous Assigns (`assign` statements)
-
-A module may have any number of continuous `assign` statements. 
-
-Continuous `assign` statements are used to [drive](#driving-values-in-verilog) values on to `wire`s, and are evaluated and updated whenever an input operand changes value. For example:
-
-```verilog
-assign a = b & c;
-```
-
-This is referred to as a continuous assign because the `wire` on the left-hand side of the assignment operator is continuously driven with the value of the expression on the right-hand side. 
-
-The target of the assign statement must be a [`wire`](#wire). 
-
-The continuous assign statement is not a procedural statement and so must be used at the module level; it cannot be placed in an [`initial` or `always`](#initial-and-always-statements) process.
-
-You can add delay to a continuous assign statement as follows:
-
-```verilog
-assign #10 a = b & c;
-```
-
-In this case, the value of `a` changes 10 units of time after the expression `b & c` changes. 
-
-## Procedural Assignments
-
-Procedural assignments update the value of register variables under the control of the procedural flow constructs that surround them.
-
-```verilog
-module test;
-  reg a, b, c, d;
-  
-  initial begin 
-    a = 1'b0;
-    b = 1'b1;
-    
-    {c, d} = b+a; // Here we are assigning the 2 bit sum of addition of a and b to c and d, where 'd' is assigned the LSB and 'c' is assigned the MSB.
-  end
-endmodule
-```
-## Driving values in verilog
-
-A driver is a concurrent process that determines the value of a signal.
-
-# Verilog Compiler Directives
-
-## 1. `timescale
-
-Verilog simulation depends on how time is defined because the simulator needs to know what a `#1` means in terms of time.
-
-The **`timescale** pre-processor directive specifies the time unit and precision for the modules that follow it.
-
-This is the syntax for it:
-```verilog
-`timescale <time_unit>/<time_precision>  
-// for example  
-`timescale 1ns/1ps  
-`timescale 10us/100ns  
-`timescale 10ns/1ns  
-```
-
-- The `time_unit` is the measurement of delays and simulation time. 
-- The `time_precision` specifies how delay values are rounded before being used in the simulation.
-
-### Checking the Default Timescale (`$printtimescale`)
-
-Although Verilog modules are expected to have a timescale defined before the module, simulators may insert a DEFAULT timescale.
-
-The actual timescale that gets applied at any scope in a Verilog elaborated hierarchy can be printed using the system task `$printtimescale`, which accepts the scope as an argument.
-
-```verilog
-module tb;  
-    initial begin  
-        // Print timescale of this module  
-        $printtimescale(tb);  
-    end  
-endmodule  
-```
-
-## 2. `include
-
-Other files can be included in the current file using an **`include** pre-processor directive makes the compiler place contents of the included file before compilation.
-
-This is equivalent to simply pasting the entire contents of the other file in this main file.
-
-TODO
-
-# Verilog System Tasks
-
-- `$display`: displays values of variables, string, or expressions
-  ```verilog
-  $display(ep1, ep2, …, epn);
-  ```
-  ep1, ep2, …, epn: quoted strings, variables, expressions.
-- `$monitor`: monitors a signal when its value changes.
-  ```verilog
-  $monitor(ep1, ep2, …, epn);
-  ```
-- `$monitoton`: enables monitoring operation.
-- `$monitotoff`: disables monitoring operation.
-- `$stop`: suspends the simulation and puts a simulator in an interactive mode.
-- `$finish`: exits the simulation and gives control back to the operating system.
-
-# Verilog Timing Control
-
-Timing control statements are required in simulation to advance time. 
-
-The time at which procedural statements will get executed shall be specified using timing controls.
-
-
-## Delay control
-
-The delay control is a way of adding a delay between when the simulator encounters the statement and when it executes.
-
-Delay control is achieved by specifying the waiting time to execution when the statement is encountered. 
-
-The symbol `#` is used to specify the delay.
-
-```verilog
-#10 $display("Hello World");
-```
-The `#10` command advances time by 10 units. So, Hello World is displayed after 10 units of time.
-
-## Rise and Fall
-
-TODO
 
 # Procedural Blocks
 
@@ -588,6 +553,448 @@ The sensitivity list brings a certain sense of timing, i.e., whenever any signal
 
 If there are no timing control statements within an `always` block, the simulation will hang because of a zero-delay infinite loop.
 
+# Assignments in Verilog
+
+## Procedural Assignments
+
+The concept of ***procedural assignment*** is that when we write a value into a variable, that value is saved until the next assignment to that variable. 
+
+This is part of executing an ordered set of statements. The last assignment determines the current value of the variable.
+
+An HDL like Verilog may add some notion of time in between assignments and other statements. 
+
+```verilog
+module test;
+  reg a, b, c, d;
+  
+  initial begin 
+    a = 1'b0;
+    b = 1'b1;
+    
+    {c, d} = b+a; // Here we are assigning the 2 bit sum of addition of a and b to c and d, where 'd' is assigned the LSB and 'c' is assigned the MSB.
+  end
+endmodule
+```
+
+### Blocking Assignment (`=`)
+
+Blocking assignment statements are assigned using `=` and are executed one after the other in a [procedural block](#procedural-blocks). 
+
+However, this will not prevent execution of statments that run in a parallel block.
+
+```verilog
+module tb;
+  reg [7:0] a, b, c, d, e;
+
+  initial begin
+    a = 8'hDA;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+    b = 8'hF1;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+    c = 8'h30;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+  end
+
+  initial begin
+    d = 8'hAA;
+    $display ("[%0t] d=0x%0h e=0x%0h", $time, d, e);
+ 	e = 8'h55;
+    $display ("[%0t] d=0x%0h e=0x%0h", $time, d, e);
+  end
+endmodule
+```
+
+Note that there are two `initial` blocks which are executed in parallel when simulation starts. 
+
+Statements are executed sequentially in each block and both blocks finish at time `0ns`. 
+
+To be more specific, variable `a` gets assigned first, followed by the display statement which is then followed by all other statements. 
+
+This is visible in the output where variable b and c are `8'hxx` in the first display statement. This is because variable `b` and `c` assignments have not been executed yet when the first `$display` is called.
+
+**Simulation Log**
+
+```
+ncsim> run
+[0] a=0xda b=0xx c=0xx
+[0] a=0xda b=0xf1 c=0xx
+[0] a=0xda b=0xf1 c=0x30
+[0] d=0xaa e=0xx
+[0] d=0xaa e=0x55
+ncsim: *W,RNQUIE: Simulation is complete.
+```
+
+---
+
+In the next example, we'll add a few delays into the same set of statements to see how it behaves.
+
+```verilog
+module tb;
+  reg [7:0] a, b, c, d, e;
+
+  initial begin
+    a = 8'hDA;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+    #10 b = 8'hF1;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+    c = 8'h30;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+  end
+
+  initial begin
+    #5 d = 8'hAA;
+    $display ("[%0t] d=0x%0h e=0x%0h", $time, d, e);
+ 	#5 e = 8'h55;
+    $display ("[%0t] d=0x%0h e=0x%0h", $time, d, e);
+  end
+endmodule
+```
+
+**Simulation Log**
+
+```
+ncsim> run
+[0] a=0xda b=0xx c=0xx
+[5] d=0xaa e=0xx
+[10] a=0xda b=0xf1 c=0xx
+[10] a=0xda b=0xf1 c=0x30
+[10] d=0xaa e=0x55
+ncsim: *W,RNQUIE: Simulation is complete.
+```
+
+---
+
+### Non-Blocking Assignment (`<=`)
+
+Non-blocking assignment allows assignments to be scheduled without blocking the execution of following statements and is specified by a `<=` symbol. 
+
+It's interesting to note that the same symbol is used as a relational operator in expressions, and as an assignment operator in the context of a non-blocking assignment.
+
+```verilog
+module tb;
+  reg [7:0] a, b, c, d, e;
+
+  initial begin
+    a <= 8'hDA;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+    b <= 8'hF1;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+    c <= 8'h30;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+  end
+
+  initial begin
+    d <= 8'hAA;
+    $display ("[%0t] d=0x%0h e=0x%0h", $time, d, e);
+ 	e <= 8'h55;
+    $display ("[%0t] d=0x%0h e=0x%0h", $time, d, e);
+  end
+endmodule
+```
+
+**Simulation Log**
+
+```
+ncsim> run
+[0] a=0xx b=0xx c=0xx
+[0] a=0xx b=0xx c=0xx
+[0] a=0xx b=0xx c=0xx
+[0] d=0xx e=0xx
+[0] d=0xx e=0xx
+ncsim: *W,RNQUIE: Simulation is complete.
+```
+
+The reason for this output is that the RHS of every non-blocking statement of a particular time-step is captured, and moves onto the next statement. 
+
+> _NOTE:_ The captured RHS value is assigned to the LHS variable only **at the end of the time-step.**
+
+So, if we break down the execution flow of the above example we'll get something like what's shown below.
+```
+|__ Spawn Block1: initial
+|      |___ Time #0ns : a <= 8'DA, is non-blocking so note value of RHS (8'hDA) and execute next step
+|      |___ Time #0ns : $display() is blocking, so execute this statement: But a hasn't received new values so a=8'hx
+|      |___ Time #0ns : b <= 8'F1, is non-blocking so note value of RHS (8'hF1) and execute next step
+|      |___ Time #0ns : $display() is blocking, so execute this statement. But b hasn't received new values so b=8'hx
+|      |___ Time #0ns : c <= 8'30, is non-blocking so note value of RHS (8'h30) and execute next step
+|      |___ Time #0ns : $display() is blocking, so execute this statement. But c hasn't received new values so c=8'hx
+|      |___ End of time-step and initial block, assign captured values into variables a, b, c
+|
+|__ Spawn Block2: initial
+|      |___ Time #0ns : d <= 8'AA, is non-blocking so note value of RHS (8'hAA) and execute next step
+|      |___ Time #0ns : $display() is blocking, so execute this statement: But d hasn't received new values so d=8'hx
+|      |___ Time #0ns : e <= 8'55, is non-blocking so note value of RHS (8'h55) and execute next step
+|      |___ Time #0ns : $display() is blocking, so execute this statement. But e hasn't received new values so e=8'hx
+|      |___ End of time-step and initial block, assign captured values into variables d and e
+|
+|__ End of simulation at #0ns
+```
+
+---
+
+Next, let's add delays so that the end of the current time-step is reached before displaying the values.
+
+```verilog
+module tb;
+  reg [7:0] a, b, c, d, e;
+
+  initial begin
+    a <= 8'hDA;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+    #10 b <= 8'hF1;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+    c <= 8'h30;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+  end
+
+  initial begin
+    #5 d <= 8'hAA;
+    $display ("[%0t] d=0x%0h e=0x%0h", $time, d, e);
+ 	#5 e <= 8'h55;
+    $display ("[%0t] d=0x%0h e=0x%0h", $time, d, e);
+  end
+endmodule
+```
+
+We can see that the output is different than what we got before.
+
+**Simulation Log**
+```
+ncsim> run
+[0] a=0xx b=0xx c=0xx
+[5] d=0xx e=0xx
+[10] a=0xda b=0xx c=0xx
+[10] a=0xda b=0xx c=0xx
+[10] d=0xaa e=0xx
+ncsim: *W,RNQUIE: Simulation is complete.
+```
+
+If we break down the execution flow we'll get something like what's shown below.
+
+```
+|__ Spawn Block1 at #0ns: initial
+|      |___ Time #0ns : a <= 8'DA, is non-blocking so note value of RHS (8'hDA) and execute next step
+|      |___ Time #0ns : $display() is blocking, so execute this statement: But a hasn't received new values so a=8'hx
+|      |___ End of time-step : Assign captured value to variable a, and a is now 8'hDA
+|      |___ Wait until time advances by 10 time-units to #10ns
+|	
+|      |___ Time #10ns : b <= 8'F1, is non-blocking so note value of RHS (8'hF1) and execute next step
+|      |___ Time #10ns : $display() is blocking, so execute this statement. But b hasn't received new values so b=8'hx
+|	   |___ Time #10ns : c <= 8'30, is non-blocking so note value of RHS (8'h30) and execute next step
+|      |___ Time #10ns : $display() is blocking, so execute this statement. But c hasn't received new values so c=8'hx
+|      |___ End of time-step and initial block, assign captured values into variables b, c
+|	
+|__ Spawn Block2 at #0ns: initial
+|      |___ Wait until time advances by 5 time-units to #5ns
+|	
+|      |___ Time #5ns : d <= 8'AA, is non-blocking so note value of RHS (8'hAA) and execute next step
+|      |___ Time #5ns : $display() is blocking, so execute this statement: But d hasn't received new values so d=8'hx
+|      |___ End of time-step : Assign captured value to variable d, and d is now 8'hAA
+|      |___ Wait until time advances by 5 time-units to #5ns
+|	
+|      |___ Time #10ns : e <= 8'55, is non-blocking so note value of RHS (8'h55) and execute next step
+|      |___ Time #10ns : $display() is blocking, so execute this statement. But e hasn't received new values so e=8'hx
+|      |___ End of time-step and initial block, assign captured values to variable e, and e is now 8'h55
+|
+|__ End of simulation at #10ns
+```
+
+## Continuous Assignment
+
+There are various ways to declare a *continuous assignment*, all of which represent permanent behaviors:
+
+```verilog
+wire A, B, C; 
+assign A = B | C; // continuous assignment construct. 
+or(A,B,C); // gate-level instance terminal connection 
+mymodule m1(A,B,C); // module instance port connection 
+```
+
+- The target of a *continuous assignment* must be a [`wire`](#wire). 
+
+- A *continuous assignment* is not a procedural statement, obviously. So, it must be used at the module level; it cannot be placed in an [`initial` or `always`](#initial-and-always-statements) [procedural block](#procedural-blocks).
+
+- A delay can be added to a *continuous assignment* as follows:
+
+  ```verilog
+  assign #10 a = b & c;
+  ```
+
+  In this case, the value of `a` changes 10 units of time after the expression `b & c` changes. 
+
+## Driving values in verilog
+
+A driver is a concurrent process that determines the value of a signal.
+
+Taking the above examples:
+```verilog
+wire A, B, C; 
+assign A = B | C; // continuous assignment construct. 
+or(A,B,C); // gate-level instance terminal connection 
+mymodule m1(A,B,C); // module instance port connection 
+```
+
+Although these are all different forms of ***continuous assignment*** constructs, none of them **directly assign** a value to a variable like a ***procedural assignment*** would. 
+
+All of the values being concurrently driven onto the net are passed into a *built-in resolution function*. 
+
+The result of that *resolution function* is based on the strengths of each driver representing the hardware technology in use. For example, an interrupt request signal might use the wired-or (wor) kind of net to indicate that at least one device is driving a `1`, otherwise it will resolve to a `0`. 
+
+Some signals will have weaker pull-up/down resistors that will be overridden by the values of a stronger driver. 
+
+Most technologies do not allow driving different values on the same net and the net will resolve to an unknown `x` when that happens. 
+
+In most applications, only one driver is actively assigning a `0` or `1` and the other drivers are effectively turned off by driving a high-impedance or `z` state. The consequence of this is that a bi-directional port must be modeled using a net in order to have multiple drivers on either side of the port.
+
+# Verilog Module
+
+A module is a block of Verilog code that implements certain functionality. 
+
+Modules can be embedded/instantiated within other modules, and a higher level module can communicate with its lower-level modules using their `input` and `output` [ports](#verilog-ports).
+
+A module should be enclosed within a `module` and `endmodule` keywords. 
+
+The name of the module should be given right after the `module` keyword, and an optional list of ports may be declared as well.
+
+```verilog
+module <name> ([port_list]);  
+        // Contents of the module  
+
+endmodule  
+
+// A module can have an empty portlist  
+  
+module name;  
+        // Contents of the module  
+  
+endmodule  
+
+```
+
+## Top-level Modules
+
+A top-level module is one that contains  all other modules. Although module definitions can't contain other module definitions, but modules can be instantiated within other module definitions.
+
+A top-level module is not INSTANTIATED within any other module.
+
+For example, `design` modules are usually instantiated within top-level `testbench` modules so that simulation can be run by providing input stimulus.
+
+But, the `testbench` is not instantiated within any other module because it is a block that encapsulates everything else.
+
+## `design` Top-Level
+
+The Design top-level module contains all other sub-modules required to make the design complete.
+
+## `testbench` Top-Level
+
+The `testbench` module contains a stimulus to check the functionality of the `design` and primarily used for functional verification by using simulation tools.
+
+Hence the `design` is instantiated and called `<name>` inside the `testbench` module. 
+
+The `testbench` is the top-level module from a simulator perspective.
+
+# Verilog Ports
+
+Port is an essential component of the Verilog module. 
+
+Ports are used by a module to communicate with the external world through `input` and `output`.
+
+## Port Declaration
+
+Every port in the port list must be declared as `input`, `output` or `inout`, based on the port signal's direction.
+
+Every port in the port list must be declared as `input`, `output` or `inout`. 
+
+## `wire` and `reg`
+
+In Verilog, all port declarations are implicitly declared as `wire`. If a port is intended to be a `wire`, it is sufficient to declare it as `output`, `input`, or `inout`.
+
+`input` and `inout` ports are generally declared as wires. 
+
+However, if output ports hold their value, they must be declared as `reg`.
+
+# Verilog Compiler Directives
+
+## 1. `timescale
+
+Verilog simulation depends on how time is defined because the simulator needs to know what a `#1` means in terms of time.
+
+The **`timescale** pre-processor directive specifies the time unit and precision for the modules that follow it.
+
+This is the syntax for it:
+```verilog
+`timescale <time_unit>/<time_precision>  
+// for example  
+`timescale 1ns/1ps  
+`timescale 10us/100ns  
+`timescale 10ns/1ns  
+```
+
+- The `time_unit` is the measurement of delays and simulation time. 
+- The `time_precision` specifies how delay values are rounded before being used in the simulation.
+
+### Checking the Default Timescale (`$printtimescale`)
+
+Although Verilog modules are expected to have a timescale defined before the module, simulators may insert a DEFAULT timescale.
+
+The actual timescale that gets applied at any scope in a Verilog elaborated hierarchy can be printed using the system task `$printtimescale`, which accepts the scope as an argument.
+
+```verilog
+module tb;  
+    initial begin  
+        // Print timescale of this module  
+        $printtimescale(tb);  
+    end  
+endmodule  
+```
+
+## 2. `include
+
+Other files can be included in the current file using an **`include** pre-processor directive makes the compiler place contents of the included file before compilation.
+
+This is equivalent to simply pasting the entire contents of the other file in this main file.
+
+TODO
+
+# Verilog System Tasks
+
+- `$display`: displays values of variables, string, or expressions
+  ```verilog
+  $display(ep1, ep2, …, epn);
+  ```
+  ep1, ep2, …, epn: quoted strings, variables, expressions.
+- `$monitor`: monitors a signal when its value changes.
+  ```verilog
+  $monitor(ep1, ep2, …, epn);
+  ```
+- `$monitoton`: enables monitoring operation.
+- `$monitotoff`: disables monitoring operation.
+- `$stop`: suspends the simulation and puts a simulator in an interactive mode.
+- `$finish`: exits the simulation and gives control back to the operating system.
+
+# Verilog Timing Control
+
+Timing control statements are required in simulation to advance time. 
+
+The time at which procedural statements will get executed shall be specified using timing controls.
+
+
+## Delay control
+
+The delay control is a way of adding a delay between when the simulator encounters the statement and when it executes.
+
+Delay control is achieved by specifying the waiting time to execution when the statement is encountered. 
+
+The symbol `#` is used to specify the delay.
+
+```verilog
+#10 $display("Hello World");
+```
+The `#10` command advances time by 10 units. So, Hello World is displayed after 10 units of time.
+
+## Rise and Fall
+
+TODO
+
 # Types of Modeling
 
 ## Dataflow Modelling
@@ -660,4 +1067,3 @@ end
 
 # TODO
 
-- Learn about wire and reg in detail
