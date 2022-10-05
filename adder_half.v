@@ -1,4 +1,4 @@
-module half_adder(x,y,sum,carry);
+module adder_half(x,y,sum,carry);
   input x,y;
   output sum, carry;
 
@@ -10,10 +10,10 @@ endmodule
 module testbenchforhalfadder;
   reg x, y;
   wire sum, carry;
-  half_adder h1(x, y, sum, carry); // we are creating an object h1 using `half_adder` module. 
+  adder_half h1(x, y, sum, carry); // we are creating an object h1 using `adder_half` module. 
   
   /*
-  As we change `x` and `y` during run-time of the program, the values of `sum` and `carry` will also change according to the logic implemented in the `half_adder` module, since those positional parameters are declared as `output`s in the `half_adder` module. 
+  As we change `x` and `y` during run-time of the program, the values of `sum` and `carry` will also change according to the logic implemented in the `adder_half` module, since those positional parameters are declared as `output`s in the `adder_half` module. 
   
   This can be viewed by adding `sum` and `carry` in the visualizer panel in any software.
   */

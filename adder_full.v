@@ -1,4 +1,4 @@
-module full_adder(sum, outcarry, a, b, incarry);
+module adder_full(sum, outcarry, a, b, incarry);
     input a, b, incarry;
     output sum, outcarry;
 
@@ -10,7 +10,7 @@ endmodule
 module testbenchforfulladder;
     wire sum, outcarry;
     reg a, b, incarry;
-    full_adder wire_driver(sum, outcarry, a, b, incarry);
+    adder_full wire_driver(sum, outcarry, a, b, incarry);
 
     //* Behavioral modelling
     initial begin

@@ -1,4 +1,4 @@
-module full_subtractor(minuend, subtrahend, inborrow, diff, outborrow);
+module subtractor_full(minuend, subtrahend, inborrow, diff, outborrow);
     input minuend, subtrahend, inborrow; 
     /*
     `inborrow` is the bit that tells us whether the previous operation required a BORROW or not. This information is impactful for the outputs of the current operation.
@@ -18,7 +18,7 @@ module testbenchforfullsubtractor;
     reg minuend, subtrahend, inborrow;
     wire diff, outborrow;
 
-    full_subtractor wire_driver(minuend, subtrahend, inborrow, diff, outborrow);
+    subtractor_full wire_driver(minuend, subtrahend, inborrow, diff, outborrow);
 
 
     //* Behavioral Modelling
