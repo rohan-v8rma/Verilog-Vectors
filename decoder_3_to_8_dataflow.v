@@ -1,8 +1,9 @@
-module decoder_3_to_8(in_lines, out_lines);
+module decoder_3_to_8_dataflow(in_lines, out_lines);
     
     input[2:0] in_lines;
     output[7:0] out_lines;
 
+    // Data-flow modelling
     assign out_lines[0] = ~in_lines[2] & ~in_lines[1] & ~in_lines[0],
            out_lines[1] = ~in_lines[2] & ~in_lines[1] &  in_lines[0],
            out_lines[2] = ~in_lines[2] &  in_lines[1] & ~in_lines[0],
@@ -14,12 +15,12 @@ module decoder_3_to_8(in_lines, out_lines);
 
 endmodule
 
-module decodertest_3_to_8;
+module decoder_3_to_8_dataflow_test;
 
     reg[2:0] in_lines;
     wire[7:0] out_lines;
     
-    decoder_3_to_8 wire_driver(in_lines, out_lines);
+    decoder_3_to_8_dataflow wire_driver(in_lines, out_lines);
     
     initial begin
             in_lines = 3'b000;
