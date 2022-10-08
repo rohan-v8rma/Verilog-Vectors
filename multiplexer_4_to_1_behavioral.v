@@ -1,4 +1,4 @@
-module multiplexer_4_to_1(input_lines, select_lines, out);
+module multiplexer_4_to_1_behavioral(input_lines, select_lines, out);
     input[3:0] input_lines; // 4-bit vector for input lines
     input[1:0] select_lines; // 2-bit vector for select lines
     
@@ -7,6 +7,7 @@ module multiplexer_4_to_1(input_lines, select_lines, out);
     
     // We use the case statement over here, because there is only one output to change. In the case of de-multiplexer, we need to take care of 4-8 output lines
     
+    //* Behavioral modelling
     always @(input_lines or select_lines) begin
       
       // We used case statement over here, since we have taken care of all possible cases of select_lines.
@@ -16,10 +17,12 @@ module multiplexer_4_to_1(input_lines, select_lines, out);
         2'b10 : out = input_lines[2];
         2'b11 : out = input_lines[3];
       endcase
+
+      $display("Input lines: %b\nSelect lines: %b\nOutput: %b\n", input_lines, select_lines, out);
     end
 endmodule
 
-module muxtest_4_to_1;
+module multiplexer_4_to_1_behavioral_test;
     reg[3:0] input_lines;
     reg[1:0] select_lines;
     wire out;

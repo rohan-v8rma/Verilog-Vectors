@@ -3,7 +3,7 @@ module decoder_3_to_8_dataflow(in_lines, out_lines);
     input[2:0] in_lines;
     output[7:0] out_lines;
 
-    // Data-flow modelling
+    //* Data-flow modelling
     assign out_lines[0] = ~in_lines[2] & ~in_lines[1] & ~in_lines[0],
            out_lines[1] = ~in_lines[2] & ~in_lines[1] &  in_lines[0],
            out_lines[2] = ~in_lines[2] &  in_lines[1] & ~in_lines[0],
@@ -12,7 +12,11 @@ module decoder_3_to_8_dataflow(in_lines, out_lines);
            out_lines[5] =  in_lines[2] & ~in_lines[1] &  in_lines[0],
            out_lines[6] =  in_lines[2] &  in_lines[1] & ~in_lines[0],
            out_lines[7] =  in_lines[2] &  in_lines[1] &  in_lines[0];
-
+    
+    // Output may be a bit faulty because everytime a single bit of `out_lines` is being changed, the values are being displayed
+    always @(out_lines) begin
+        $display("%b: %b", in_lines, out_lines);
+    end
 endmodule
 
 module decoder_3_to_8_dataflow_test;

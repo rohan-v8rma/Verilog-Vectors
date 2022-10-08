@@ -5,7 +5,11 @@ module encoder_4_to_2_dataflow(in_lines, out_lines);
     //* Dataflow Modelling
     assign out_lines[1] = in_lines[3] | in_lines[2],
            out_lines[0] = in_lines[3] | in_lines[1];
-           
+    
+    //? $display should be in procedural block
+    always @(out_lines[1] or out_lines[0]) begin
+        $display("%b: %b", in_lines, out_lines);      
+    end           
 endmodule
 
 

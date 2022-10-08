@@ -3,7 +3,7 @@ module decoder_3_to_8_gatelevel(in_lines, out_lines);
     input[2:0] in_lines;
     output[7:0] out_lines;
 
-    // Gate-level modelling
+    //* Gate-level modelling
     and(out_lines[0], ~in_lines[2], ~in_lines[1], ~in_lines[0]);
     and(out_lines[1], ~in_lines[2], ~in_lines[1],  in_lines[0]);
     and(out_lines[2], ~in_lines[2],  in_lines[1], ~in_lines[0]);
