@@ -6,6 +6,12 @@ module priority_encoder_4_to_2_dataflow(in_lines, out_lines);
                        (in_lines[2] == 1'b1) ? 2'b10 :  
                        (in_lines[1] == 1'b1) ? 2'b01 : 
 	                     (in_lines[0] == 1'b1) ? 2'b00 : 2'bxx;
+
+    //? This also works, as 1'b1 has truth value 'true'
+    // assign out_lines = (in_lines[3]) ? 2'b11 : 
+    //                    (in_lines[2]) ? 2'b10 :  
+    //                    (in_lines[1]) ? 2'b01 : 
+    //                    (in_lines[0]) ? 2'b00 : 2'bxx;
 endmodule
 
 

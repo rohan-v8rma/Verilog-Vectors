@@ -2,15 +2,17 @@ module priority_encoder_4_to_2_gatelevel(in_lines, out_lines);
     input[3:0] in_lines; // 4-bit vector for input lines
     output[1:0] out_lines; // 2-bit vector for output lines
     
+    //* Gate-level modelling
 
-    // assign out_lines = (in_lines[3] == 1'b1) ? 2'b11 : 
-    //                    (in_lines[2] == 1'b1) ? 2'b10 :  
-    //                    (in_lines[1] == 1'b1) ? 2'b01 : 
-	  //                    (in_lines[0] == 1'b1) ? 2'b00 : 2'bxx;
-    assign out_lines = (in_lines[3]) ? 2'b11 : 
-                       (in_lines[2]) ? 2'b10 :  
-                       (in_lines[1]) ? 2'b01 : 
-	                     (in_lines[0]) ? 2'b00 : 2'bxx;                       
+    // Oth bit
+    wire l;
+    and(l, ~in_lines[2], in_lines[1]);
+    or(out_lines[0], in_lines[3], l);
+
+    // 1st bit
+    or(out_lines[1], in_lines[2], in_lines[3]);
+    
+
 endmodule
 
 
