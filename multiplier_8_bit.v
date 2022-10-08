@@ -4,6 +4,7 @@ module multiplier_8_bit(num1, num2, product);
     output [15:0] product; 
     // the product of two 8-bit (not digit) numbers can, at maximum, be a 16-bit number 
     
+    //* Behavioral Modelling
     assign product = (num1 * num2);
 endmodule
 
