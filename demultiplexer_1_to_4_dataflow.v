@@ -1,4 +1,4 @@
-module demultiplexer_1_to_4(in, select_lines, output_lines);
+module demultiplexer_1_to_4_dataflow(in, select_lines, output_lines);
     input in; // 1-bit vector for input
     input[1:0] select_lines; // 3-bit vector for select lines
     
@@ -6,18 +6,24 @@ module demultiplexer_1_to_4(in, select_lines, output_lines);
 
     //In DEMUX, If we just used case statement and made specific output lines connected to input BASED on the values of select lines, the other lines would be neither 1 nor 0 (UNDEFINED), when they are not connected to input.
     
+    //* Data-flow modelling
     assign output_lines[0] = in & ~(select_lines[1]) & ~(select_lines[0]),
            output_lines[1] = in & ~(select_lines[1]) & (select_lines[0]), 
            output_lines[2] = in & (select_lines[1]) & ~(select_lines[0]),
-           output_lines[3] = in & (select_lines[1]) & (select_lines[0]);
-           
+           output_lines[3] = in & (select_lines[1]) & (select_lines[0]);    
+
+    //TODO: Fix displaying of output every time a single bit of 'output_lines' is changed
+    always @(output_lines) begin
+        $display("Input: %b\nSelect lines: %b\nOutput lines: %b\n", in, select_lines, output_lines);
+    end
+
 endmodule
 
-module demuxtest_1_to_4;
+module demultiplexer_1_to_4_dataflow_test;
     reg in;
     reg[1:0] select_lines;
     wire[3:0] output_lines;
-    demultiplexer_1_to_8 wire_driver(in, select_lines, output_lines);
+    demultiplexer_1_to_4_dataflow wire_driver(in, select_lines, output_lines);
     
     initial begin
           
