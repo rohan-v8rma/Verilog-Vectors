@@ -1,4 +1,4 @@
-module priority_encoder_4_to_2(in_lines, out_lines);
+module priority_encoder_4_to_2_dataflow(in_lines, out_lines);
     input[3:0] in_lines; // 4-bit vector for input lines
     output[1:0] out_lines; // 2-bit vector for output lines
     
@@ -9,12 +9,12 @@ module priority_encoder_4_to_2(in_lines, out_lines);
 endmodule
 
 
-module priority_encodertest_4_to_2;
+module priority_encoder_4_to_2_dataflow_test;
     reg[3:0] in_lines;
     
     wire[1:0] out_lines;
     
-    priority_encoder_4_to_2 wire_driver(in_lines, out_lines);
+    priority_encoder_4_to_2_dataflow wire_driver(in_lines, out_lines);
     
     initial begin
      
