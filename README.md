@@ -197,74 +197,74 @@ The identifier is the name used to define the object, such as a function, module
 
 ### Arithmetic Operators
 
-    For the FPGA, division and multiplication are very expensive, and sometimes we cannot synthesize division. If we use Z or X for values, the result is unknown. The operations treat the values as unsigned.
+  For the FPGA, division and multiplication are very expensive, and sometimes we cannot synthesize division. If we use Z or X for values, the result is unknown. The operations treat the values as unsigned.
 
-    | Character |	Operation performed |	Example |
-    |-|-|-|
-    | `+` |	Add |	b + c = 11 |
-    | `-` |	Subtract |	b - c = 9, -b=-10 |
-    | `/` |	Divide |	b / a = 2 |
-    | `*` |	Multiply |	a * b = 50 |
-    | `%` |	Modulus |	b % a = 0 |
+  | Character |	Operation performed |	Example |
+  |-|-|-|
+  | `+` |	Add |	b + c = 11 |
+  | `-` |	Subtract |	b - c = 9, -b=-10 |
+  | `/` |	Divide |	b / a = 2 |
+  | `*` |	Multiply |	a * b = 50 |
+  | `%` |	Modulus |	b % a = 0 |
 
 ### Bitwise Operators
     
-    Each bit is operated, the result is the size of the largest operand, and the smaller operand is left extended with zeroes to the bigger operand's size.
+  Each bit is operated, the result is the size of the largest operand, and the smaller operand is left extended with zeroes to the bigger operand's size.
     
-    | Character |	Operation performed |	Example |
-    |-|-|-|
-    | `~` |	Invert each bit |	~a = 3'b010 |
-    | `&` |	And each bit | b & c = 3'b010 |
-    | `\|` | Or each bit	| a \| b = 3'b111 |
-    | `^`	| Xor each bit	| a ^ b = 3'b011 |
-    | `^~` or `~^` |	Xnor each bit |	a ^~ b = 3'b100 |
+  | Character |	Operation performed |	Example |
+  |----|----|------|
+  | `~` |	Invert each bit |	~a = 3'b010 |
+  | `&` |	And each bit | b & c = 3'b010 |
+  | `\|` | Or each bit	| a \| b = 3'b111 |
+  | `^`	| Xor each bit	| a ^ b = 3'b011 |
+  | `^~` or `~^` |	Xnor each bit |	a ^~ b = 3'b100 |
 
 ### Reduction Operators
 
-    These operators reduce the vectors to only one bit. If there are the characters z and x, the result can be a known value.
+  These operators reduce the vectors to only one bit. If there are the characters z and x, the result can be a known value.
 
-    | Character |	Operation performed |	Example |
-    |-|-|-|
-    | `&` |	And all bits |	&a = 1'b0, &d = 1'b0 |
-    | `~&` |	Nand all bits	| ~&a = 1'b1 |
-    | `\|` |	Or all bits	| \|a = 1'b1, \|c = 1'bX |
-    | `~\|` |	Nor all bits |	~\|a= 1'b0 |
-    | `^` |	Xor all bits |	^a = 1'b1 |
-    | `^~` or `~^` |	Xnor all bits |	~^a = 1'b0 |
+  | Character |	Operation performed |	Example |
+  |-|-|-|
+  | `&` |	And all bits |	&a = 1'b0, &d = 1'b0 |
+  | `~&` |	Nand all bits	| ~&a = 1'b1 |
+  | `\|` |	Or all bits	| \|a = 1'b1, \|c = 1'bX |
+  | `~\|` |	Nor all bits |	~\|a= 1'b0 |
+  | `^` |	Xor all bits |	^a = 1'b1 |
+  | `^~` or `~^` |	Xnor all bits |	~^a = 1'b0 |
 
 ### Relational Operators
 
-    These operators compare operands and results in a 1-bit scalar Boolean value. The case equality and inequality operators can be used for unknown (`x`) or high impedance values (`z`), and if the two operands are unknown, the result is a 1.
+  These operators compare operands and results in a 1-bit scalar Boolean value. The case equality and inequality operators can be used for unknown (`x`) or high impedance values (`z`), and if the two operands are unknown, the result is a 1.
 
-    | Character |	Operation performed |	Example |
-    |-|-|-|
-    | `>` |	Greater than |	a > b = 1'b0 |
-    | `<` |	Smaller than | a < b = 1'b1 |
-    | `>=` |	Greater than or equal |	a >= d = 1'bX |
-    | `<=` | Smaller than or equal |	a <= e = 1'bX |
-    | `==` |	Equality	| a == b = 1'b0 |
-    | `!=` |	Inequality |	a != b = 1'b1 |
-    |`===` |	Case equality	| e === e = 1'b1 |
-    | `!===` |	Case inequality	| a !== d = 1'b1 |
+  | Character |	Operation performed |	Example |
+  |-|-|-|
+  | `>` |	Greater than |	a > b = 1'b0 |
+  | `<` |	Smaller than | a < b = 1'b1 |
+  | `>=` |	Greater than or equal |	a >= d = 1'bX |
+  | `<=` | Smaller than or equal |	a <= e = 1'bX |
+  | `==` |	Equality	| a == b = 1'b0 |
+  | `!=` |	Inequality |	a != b = 1'b1 |
+  |`===` |	Case equality	| e === e = 1'b1 |
+  | `!===` |	Case inequality	| a !== d = 1'b1 |
 
 ### Logical Operators
 
-    These operators compare operands and results in a 1-bit scalar Boolean value.
+  These operators compare operands and results in a 1-bit scalar Boolean value.
 
-    | Character |	Operation performed |	Example |
-    |-|-|-|
-    | `!` |	Not true |	!(a && b) = 1'b1 |
-    | `&&` | Both expressions true	| a && b = 1'b0 |
-    | `\|\|` | One ore both expressions true |	a \|\| b = 1'b1 |
+  | Character |	Operation performed |	Example |
+  |-|-|-|
+  | `!` |	Not true |	!(a && b) = 1'b1 |
+  | `&&` | Both expressions true	| a && b = 1'b0 |
+  | `\|\|` | One ore both expressions true |	a \|\| b = 1'b1 |
 
 ### Shift Operators
   
-    These operators shift operands to the right or left, the size is kept constant, shifted bits are lost, and the vector is filled with zeroes.
+  These operators shift operands to the right or left, the size is kept constant, shifted bits are lost, and the vector is filled with zeroes.
 
-    | Character |	Operation performed |	Example |
-    |-|-|-|
-    | `>>` |	Shift right	| b >> 1 results 4?b010X |
-    | `<<` |	Shift left	| a << 2 results 4?b1000 |
+  | Character |	Operation performed |	Example |
+  |-|-|-|
+  | `>>` |	Shift right	| b >> 1 results 4?b010X |
+  | `<<` |	Shift left	| a << 2 results 4?b1000 |
 
 ### Assignment Operators
 There are three assignment operators, each of which performs different tasks, and are used with different data types:
@@ -275,13 +275,13 @@ There are three assignment operators, each of which performs different tasks, an
 
 ### Other Operators
 
-    These are operators used for condition testing and to create vectors.
+  These are operators used for condition testing and to create vectors.
 
-    | Character |	Operation performed |	Example |
-    |-----------|---------------------|---------|
-    |  `?:`	    |Conditions testing	  | test cond. `?` if true do this `:` if not do this|
-    | `{}`	    | [Concatenation](#verilog-concatenation)	        | c = {a,b} = 8'101010x0|
-    |`{{}}`     |	[Replication](#verilog-replication)       |	{3{`2'b10`}} = `6'b101010`|
+  | Character |	Operation performed |	Example |
+  |-----------|---------------------|---------|
+  |  `?:`	    |Conditions testing	  | test cond. `?` if true do this `:` if not do this|
+  | `{}`	    | [Concatenation](#verilog-concatenation)	        | c = {a,b} = 8'101010x0|
+  |`{{}}`     |	[Replication](#verilog-replication)       |	{3{`2'b10`}} = `6'b101010`|
 
 ## Operands
 
