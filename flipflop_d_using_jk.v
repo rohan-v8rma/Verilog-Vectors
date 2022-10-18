@@ -12,11 +12,13 @@ module flipflop_jk_behavioral(j, k, clk, q, q_inverse);
 
     always @(posedge clk) begin
         case({j, k}) 
-            2'b01: begin q = 1'b0; q_inverse = 1'b1; end
-            2'b10: begin q = 1'b1; q_inverse = 1'b0; end
-            2'b11: begin q = ~q; q_inverse = ~q_inverse; end
-            default: begin q = q; q_inverse = q_inverse; end
+            2'b01: begin q = 1'b0; end
+            2'b10: begin q = 1'b1; end
+            2'b11: begin q = ~q; end
+            default: begin q = q; end
         endcase
+
+        q_inverse = ~q;
 
         $display("J: %d, K:%d\nQ: %d, Q_inverse: %d\n\n", j, k, q, q_inverse);
     end
@@ -48,7 +50,7 @@ module flipflop_d_using_jk_test;
     flipflop_d_using_jk wire_driver(d, clk, q, q_inverse);
 
     initial begin
-        // When at 5ns, the positive edge of the clock is reached, j and k are not defined, leading to x, x output 
+        // When at 5ns, the positive edge of the clock is reached, J and K are not defined, leading to x, x values for J and K.
         // Thereafter for every rising edge, the value is different, since 10ns is the length of the clock pulse
         //
         #10 d = 1'b1;  // Values at rising edge at 15ns

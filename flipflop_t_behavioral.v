@@ -12,10 +12,12 @@ module flipflop_t_behavioral(t, clk, q, q_inverse);
 
     always @(posedge clk) begin
         case(t) 
-            1'b0: begin q = q; q_inverse = q_inverse; end // Unchanged case
-            1'b1: begin q = ~q; q_inverse = ~q_inverse; end // Toggle
-            default: begin q = q; q_inverse = q_inverse; end
+            1'b0: begin q = q; end // Unchanged case
+            1'b1: begin q = ~q; end // Toggle
+            default: begin q = q; end
         endcase
+        
+        q_inverse = ~q;
 
         $display("T: %d\nQ: %d, Q_inverse: %d\n\n", t, q, q_inverse);
     end
@@ -36,7 +38,7 @@ module flipflop_t_behavioral_test;
     flipflop_t_behavioral wire_driver(t, clk, q, q_inverse);
 
     initial begin
-        // When at 5ns, the positive edge of the clock is reached, j and k are not defined, leading to x, x output 
+        // When at 5ns, the positive edge of the clock is reached, T is not defined, leading to x value for T.
         // Thereafter for every rising edge, the value is different, since 10ns is the length of the clock pulse
         //
         #10 t = 1'b1;  // Values at rising edge at 15ns

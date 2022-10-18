@@ -1,4 +1,4 @@
-module flipflop_t_dataflow(t, clk, q, q_inverse);
+module flipflop_t_behavioral(t, clk, q, q_inverse);
 
     input t, clk;
     output q, q_inverse;
@@ -26,7 +26,7 @@ module flipflop_d_using_t(d, clk, q, q_inverse);
     input d, clk;
     output q, q_inverse;
 
-    flipflop_t_dataflow wire_driver(d ^ q, clk, q, q_inverse);
+    flipflop_t_behavioral wire_driver(d ^ q, clk, q, q_inverse); // t = d*(q') + (d')*q = d ^ q
 
 endmodule
 
@@ -47,7 +47,7 @@ module flipflop_d_using_t_test;
     flipflop_d_using_t wire_driver(d, clk, q, q_inverse);
 
     initial begin
-        // When at 5ns, the positive edge of the clock is reached, j and k are not defined, leading to x, x output 
+        // When at 5ns, the positive edge of the clock is reached, T is not defined, leading to x value for T.
         // Thereafter for every rising edge, the value is different, since 10ns is the length of the clock pulse
         //
         #10 d = 1'b1;  // Values at rising edge at 15ns
