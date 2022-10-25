@@ -1,7 +1,6 @@
 module register_shift_SIPO_4_bit(clk, clear, serial_in, parallel_out);
 
-    input clk, clear;
-    input serial_in;
+    input clk, clear, serial_in;
     output reg[3:0] parallel_out;
 
 
