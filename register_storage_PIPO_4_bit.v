@@ -1,4 +1,4 @@
-module register_shift_PIPO_4_bit(clk, clear, parallel_in, parallel_out);
+module register_storage_PIPO_4_bit(clk, clear, parallel_in, parallel_out);
 
     input clk, clear;
     input[3:0] parallel_in;
@@ -17,7 +17,7 @@ module register_shift_PIPO_4_bit(clk, clear, parallel_in, parallel_out);
 endmodule
 
 // Test bench
-module register_shift_PIPO_4_bit_test;
+module register_storage_PIPO_4_bit_test;
     
     reg clk, clear;
     reg[3:0] parallel_in;
@@ -30,7 +30,7 @@ module register_shift_PIPO_4_bit_test;
         end
     end
 
-    register_shift_PIPO_4_bit wire_driver(.clk(clk), .clear(clear), .parallel_in(parallel_in), .parallel_out(parallel_out));
+    register_storage_PIPO_4_bit wire_driver(.clk(clk), .clear(clear), .parallel_in(parallel_in), .parallel_out(parallel_out));
 
     initial begin
         // For every rising edge, the value is different, since 10ns is the length of the clock pulse
