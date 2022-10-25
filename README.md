@@ -580,7 +580,7 @@ endmodule
 
 Blocking assignment statements are assigned using `=` and are executed one after the other in a [procedural block](#procedural-blocks). 
 
-However, this will not prevent execution of statments that run in a parallel block.
+However, this will not prevent execution of statements that run in a parallel block.
 
 ```verilog
 module tb;
