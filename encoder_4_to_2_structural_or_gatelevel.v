@@ -1,4 +1,4 @@
-module encoder_4_to_2_gatelevel(in_lines, out_lines);
+module encoder_4_to_2_structural_or_gatelevel(in_lines, out_lines);
     input[3:0] in_lines; // 8-bit vector for input lines
     output[1:0] out_lines; // 3-bit vector for output lines
     
@@ -13,12 +13,12 @@ module encoder_4_to_2_gatelevel(in_lines, out_lines);
 endmodule
 
 
-module encoder_4_to_2_gatelevel_test;
+module encoder_4_to_2_structural_or_gatelevel_test;
     reg[3:0] in_lines;
     
     wire[1:0] out_lines;
     
-    encoder_4_to_2_gatelevel wire_driver(in_lines, out_lines);
+    encoder_4_to_2_structural_or_gatelevel wire_driver(in_lines, out_lines);
     
     initial begin
             in_lines = 4'b0001;

@@ -1,4 +1,4 @@
-module decoder_3_to_8_gatelevel(in_lines, out_lines);
+module decoder_3_to_8_structural_or_gatelevel(in_lines, out_lines);
     
     input[2:0] in_lines;
     output[7:0] out_lines;
@@ -15,12 +15,12 @@ module decoder_3_to_8_gatelevel(in_lines, out_lines);
 
 endmodule
 
-module decoder_3_to_8_gatelevel_test;
+module decoder_3_to_8_structural_or_gatelevel_test;
 
     reg[2:0] in_lines;
     wire[7:0] out_lines;
     
-    decoder_3_to_8_gatelevel wire_driver(in_lines, out_lines);
+    decoder_3_to_8_structural_or_gatelevel wire_driver(in_lines, out_lines);
     
     initial begin
             in_lines = 3'b000;
