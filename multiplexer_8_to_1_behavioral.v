@@ -1,4 +1,4 @@
-module multiplexer_8_to_1(input_lines, select_lines, out);
+module multiplexer_8_to_1_behavioral(input_lines, select_lines, out);
     input[7:0] input_lines; // 8-bit vector for input lines
     input[2:0] select_lines; // 3-bit vector for select lines
     
@@ -25,7 +25,7 @@ module muxtest_8_to_1;
     reg[7:0] input_lines;
     reg[2:0] select_lines;
     wire out;
-    multiplexer_8_to_1 wire_driver(input_lines, select_lines, out);
+    multiplexer_8_to_1_behavioral wire_driver(input_lines, select_lines, out);
     
     initial begin
           
