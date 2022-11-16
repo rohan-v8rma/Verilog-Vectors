@@ -7,12 +7,12 @@ module register_storage_PIPO_4_bit(clk, clear, parallel_in, parallel_out);
 
     always @(posedge clk) begin
         if(clear)
-            parallel_out <= 4'b0000;
+            parallel_out = 4'b0000;
         else
-            parallel_out <= parallel_in;
+            parallel_out = parallel_in;
     
-        //? Delay of #1 in order to show the correct output of the non-blocking assignment above.
-        #1 $display("clear : %b\nparallel_in : %b\nparallel_out : %b\n", clear, parallel_in, parallel_out);
+        //? Delay of #0 in order to show the correct output of the blocking assignment above.
+        #0 $display("clear : %b\nparallel_in : %b\nparallel_out : %b\n", clear, parallel_in, parallel_out);
     end
 endmodule
 

@@ -22,9 +22,9 @@ module register_shift_PISO_4_bit(clk, load, parallel_in, serial_out);
 
     always @(posedge clk) begin
         if(load) // load mode is ON 
-            temp_out_stream <= parallel_in;
+            temp_out_stream = parallel_in;
         else begin // shift mode is ON 
-            serial_out <= temp_out_stream[3]; 
+            serial_out = temp_out_stream[3]; 
             // Assigning the MSB of the temporary output stream to the serial output. 
             temp_out_stream = temp_out_stream << 1; 
             // Left shifting the bits of the temporary output stream.
@@ -33,8 +33,8 @@ module register_shift_PISO_4_bit(clk, load, parallel_in, serial_out);
         end    
 
 
-        //? Delay of #1 in order to show the correct output of the non-blocking assignment above.
-        #1 $display("load : %b\nparallel_in : %b\ntemp_out_stream : %b\nserial_out : %b\n", load, parallel_in, temp_out_stream, serial_out);
+        //? Delay of #0 to show the correct output of the blocking assignment above.
+        #0 $display("load : %b\nparallel_in : %b\ntemp_out_stream : %b\nserial_out : %b\n", load, parallel_in, temp_out_stream, serial_out);
     end
 endmodule
 

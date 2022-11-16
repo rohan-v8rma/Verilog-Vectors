@@ -6,14 +6,14 @@ module register_shift_SIPO_4_bit(clk, clear, serial_in, parallel_out);
 
     always @(posedge clk) begin
         if(clear)
-            parallel_out <= 4'b0000;
+            parallel_out = 4'b0000;
         else begin
-            parallel_out <= parallel_out << 1; // left shifting the value of parallel_out. So, this is a left shift register, where shifting occurs from LSB towards MSB.
-            parallel_out[0] <= serial_in; // For filling the empty bit generated as a result of shifting.
+            parallel_out = parallel_out << 1; // left shifting the value of parallel_out. So, this is a left shift register, where shifting occurs from LSB towards MSB.
+            parallel_out[0] = serial_in; // For filling the empty bit generated as a result of shifting.
         end
 
-        //? Delay of #1 in order to show the correct output of the non-blocking assignment above.
-        #1 $display("clear : %b\nserial_in : %b\nparallel_out : %b\n", clear, serial_in, parallel_out);
+        //? Delay of #0 in order to show the correct output of the blocking assignment above.
+        #0 $display("clear : %b\nserial_in : %b\nparallel_out : %b\n", clear, serial_in, parallel_out);
     end
 endmodule
 
