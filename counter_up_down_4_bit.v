@@ -1,8 +1,8 @@
-// Values of `down_counting`
+// Values of `down_counting_boolean`
 // 0 stands for up counting
 // 1 stands for down counting
 
-module counter_up_down_4_bit(input clk, input down_counting, output [3:0]count);
+module counter_up_down_4_bit(input clk, input down_counting_boolean, output [3:0]count);
     
     reg set;
     reg clear;
@@ -12,7 +12,7 @@ module counter_up_down_4_bit(input clk, input down_counting, output [3:0]count);
         set = 1'b0;
         clear = 1'b0;
 
-        if(down_counting) begin
+        if(down_counting_boolean) begin
             // MOD 16 DOWN counter (counting from 15-0)
             count = 4'd15;
 
@@ -27,10 +27,10 @@ module counter_up_down_4_bit(input clk, input down_counting, output [3:0]count);
 
         $display("At time : %d; count is %d", $time, count);
         
-        if(down_counting) begin
+        if(down_counting_boolean) begin
             if(set) begin
 
-            // MOD 15 DOWN counter
+            // MOD 16 DOWN counter
             count = 4'd15;
 
             // MOD 11 DOWN counter
@@ -69,10 +69,10 @@ module counter_up_down_4_bit_test;
     
     wire[3:0] count_variable;
     reg clk;
-    reg down_counting;
+    reg down_counting_boolean;
 
     initial begin
-        down_counting = 1'b0; // Down Counting is OFF
+        down_counting_boolean = 1'b0; // Down Counting is OFF
         
         clk = 1'b0;
         forever begin
@@ -80,11 +80,11 @@ module counter_up_down_4_bit_test;
         end 
     end
     
-    counter_up_down_4_bit wire_driver(clk, down_counting, count_variable);
+    counter_up_down_4_bit wire_driver(clk, down_counting_boolean, count_variable);
 
     initial begin 
         
-        #200 down_counting = 1'b1; // turning ON Down Counting
+        #200 down_counting_boolean = 1'b1; // turning ON Down Counting
         
         #200 $finish;
     end    

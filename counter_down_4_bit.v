@@ -20,7 +20,7 @@ module counter_down_4_bit(input clk, output [3:0]count);
             // MOD 16 DOWN counter (counting from 15-0)
             count = 4'd15;
 
-            // MOD 5 DOWN counter (counting from 10-0)
+            // MOD 11 DOWN counter (counting from 10-0)
             // count = 3'd10;
 
             set = 1'b0;
