@@ -13,6 +13,11 @@ module decoder_3_to_8_structural_or_gatelevel(in_lines, out_lines);
     and(out_lines[6],  in_lines[2],  in_lines[1], ~in_lines[0]);
     and(out_lines[7],  in_lines[2],  in_lines[1],  in_lines[0]);
 
+    always @(in_lines) begin
+        #0 
+        $display("Encoded Input : %b\nDecoded Output : %b\n", in_lines, out_lines);
+    end
+
 endmodule
 
 module decoder_3_to_8_structural_or_gatelevel_test;
