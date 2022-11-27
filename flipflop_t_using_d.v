@@ -1,9 +1,7 @@
 module flipflop_d_behavioral(d, clk, q, q_inverse);
 
     input d, clk;
-    output q, q_inverse;
-
-    reg q, q_inverse;
+    output reg q, q_inverse;
 
     initial begin // Clearing the flip flop
         q = 1'b0;
@@ -52,15 +50,16 @@ module flipflop_t_using_d_test;
         // When at 5ns, the positive edge of the clock is reached, D is not defined, leading to x value displayed for D.
         // Thereafter for every rising edge, the value is different, since 10ns is the length of the clock pulse
         //
-        #10 t = 1'b1;  // Values at rising edge at 15ns
+        #10 t = 1'b0;  // Values at rising edge at 15ns
         #10 t = 1'b0;  // Values at rising edge at 25ns
-        #10 t = 1'b1;  // Values at rising edge at 35ns
-        #10 t = 1'b0;  // Values at rising edge at 45ns
+        #10 t = 1'b0;  // Values at rising edge at 35ns
+        #10 t = 1'b1;  // Values at rising edge at 45ns
         #10 t = 1'b1;  // Values at rising edge at 55ns
+        #10 t = 1'b1;  // Values at rising edge at 65ns
         #10 $finish;
     end
 
     always @(t) 
-        $display("T: %d", t);
+        #0 $display("T: %d", t);
 
 endmodule

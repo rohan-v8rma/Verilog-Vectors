@@ -1,9 +1,7 @@
 module flipflop_jk_behavioral(j, k, clk, q, q_inverse);
 
     input j, k, clk;
-    output q, q_inverse;
-
-    reg q, q_inverse;
+    output reg q, q_inverse;
 
     initial begin // Clearing the flip flop
         q = 1'b0;

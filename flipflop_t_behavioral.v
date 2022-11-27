@@ -1,9 +1,7 @@
 module flipflop_t_behavioral(t, clk, q, q_inverse);
 
     input t, clk;
-    output q, q_inverse;
-
-    reg q, q_inverse;
+    output reg q, q_inverse;
 
     initial begin // Clearing the flip flop
         q = 1'b0;
