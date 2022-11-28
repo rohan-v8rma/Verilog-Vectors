@@ -3,14 +3,16 @@ module multiplexer_4_to_1_structural_or_gatelevel(select_lines, input_lines, out
     input[1:0] select_lines;
     input[3:0] input_lines;
     
-
     output out;
 
     wire wire_1, wire_2, wire_3, wire_4;
-    and(wire_1, input_lines[0], ~select_lines[1], ~select_lines[0]);
+    
+    // Although the outputs of the and gates should be DON'T CARE, when they are not selected. This setup also works fine because any one input is always selected by the select lines.
+    and(wire_1, input_lines[0], ~select_lines[1], ~select_lines[0]); 
     and(wire_2, input_lines[1], ~select_lines[1], select_lines[0]);
     and(wire_3, input_lines[2], select_lines[1], ~select_lines[0]);
     and(wire_4, input_lines[3], select_lines[1], select_lines[0]);
+
 
     or(out, wire_1, wire_2, wire_3, wire_4);
 
