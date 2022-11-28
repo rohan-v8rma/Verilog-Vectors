@@ -7,7 +7,7 @@ module register_shift_SISO_4_bit(clk, clear, serial_in, serial_out);
     always @(posedge clk) begin
 
         if (clear) begin 
-            output_stream = 4'b0;
+            output_stream = 4'b0000;
             serial_out = 1'b0;
         end else begin 
             serial_out = output_stream[3];
